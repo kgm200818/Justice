@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정의란 무엇인가 (Justice: What's the Right Thing to Do?)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Pretendard:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Splash Screen Overlay -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <h2 class="splash-title">정의란 무엇인가?</h2>
+            <p class="splash-subtitle">인간의 직관인가, 법의 논리인가, 아니면 AI의 논리인가?</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>정의란 무엇인가</h1>
+            <p>Justice: What's the Right Thing to Do?</p>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="main-content">
+
+            <!-- Step 0: Intro / Case Selection -->
+            <section id="step-intro" class="view-section active">
+                <div class="intro-box">
+                    <h2 class="intro-headline">본 프로젝트는 AI가 당신과 일반 국민의 법 감정을<br>대변할 수 있을 것인가에 대한 고찰을 위하여 만들어졌습니다.</h2>
+                    <p class="intro-subtext">
+                        아래는 실제 대한민국의 판례를 바탕으로 구성되었습니다.<br>
+                        원하시는 사건을 선택하여 <span class="highlight-text">당신이 생각하는 가장 정의로운 판결</span>을 내려주십시오.
+                    </p>
+                </div>
+
+
+
+                <div class="case-list-container">
+                    <h3>사건 목록</h3>
+                    <div id="case-list" class="case-grid">
+                        <!-- Cases injected via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 1: Scenario Presentation -->
+            <section id="step-scenario" class="view-section">
+                <div class="scenario-container">
+                    <h2 id="scenario-title" class="section-title">사건 제목</h2>
+                    <div class="scenario-content">
+                        <h3>사건 개요</h3>
+                        <p id="scenario-desc" class="scenario-text"></p>
+                    </div>
+                    <div class="scenario-content 법조항">
+                        <h3>관련 법 조항</h3>
+                        <p id="scenario-law" class="scenario-text muted"></p>
+                    </div>
+                    <div class="action-bar">
+                        <button id="btn-to-interrogation" class="btn primary-btn">재판 시작</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 1.5: Interrogation Room -->
+            <section id="step-interrogation" class="view-section">
+                <div class="interrogation-container">
+                    <h2 class="section-title">법정 심문 (Interrogation)</h2>
+                    <p class="question-instruction text-sm mb-2">판결을 내리기 전, 피고인의 항변과 검사의 기소 요지를 듣고 직접 질문해 보세요.</p>
+
+                    <div class="split-chat-container">
+                        <!-- Prosecutor Side -->
+                        <div class="chat-pane">
+                            <h3 class="pane-title">검사 (Prosecutor)</h3>
+                            <div class="chat-box" id="chat-box-prosecutor">
+                                <!-- Chat messages injected via JS -->
+                            </div>
+                            <form id="form-prosecutor" class="chat-input-area" data-role="prosecutor">
+                                <input type="text" class="form-control" autocomplete="off" placeholder="검사에게 질문하기...">
+                                <button type="submit" class="btn primary-btn btn-small">전송</button>
+                            </form>
+                        </div>
+
+                        <!-- Defendant Side -->
+                        <div class="chat-pane">
+                            <h3 class="pane-title">피고인 (Defendant)</h3>
+                            <div class="chat-box" id="chat-box-defendant">
+                                <!-- Chat messages injected via JS -->
+                            </div>
+                            <form id="form-defendant" class="chat-input-area" data-role="defendant">
+                                <input type="text" class="form-control" autocomplete="off" placeholder="피고인에게 질문하기...">
+                                <button type="submit" class="btn primary-btn btn-small">전송</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="action-bar mt-4">
+                        <button id="btn-to-judgment-from-chat" class="btn primary-btn">판결하기</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: User Judgment Input -->
+            <section id="step-judgment" class="view-section">
+                <div class="judgment-container">
+                    <h2 class="section-title">나의 판결</h2>
+
+                    <form id="judgment-form" class="judgment-form">
+                        <div class="form-group">
+                            <label>1. 유/무죄 판단</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="verdict" value="유죄" required> 유죄</label>
+                                <label><input type="radio" name="verdict" value="무죄"> 무죄</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="sentence-group">
+                            <label>2. 형량 선택</label>
+                            <select id="sentence-select" class="form-control">
+                                <option value="" disabled selected>형량을 선택하세요 (유죄 시)</option>
+                                <option value="벌금형">벌금형</option>
+                                <option value="집행유예">집행유예</option>
+                                <option value="징역 1년~3년">징역 1년~3년</option>
+                                <option value="징역 3년~5년">징역 3년~5년</option>
+                                <option value="징역 5년 이상">징역 5년 이상</option>
+                                <option value="무기징역">무기징역</option>
+                                <option value="사형">사형</option>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group highlight-group">
+                            <label for="reason-input">3. 왜 그렇게 판단하셨나요?</label>
+                            <textarea id="reason-input" class="form-control textarea" rows="3" placeholder="자유 입력"
+                                required></textarea>
+                            <small class="helper-text">이 답변은 AI 분석의 핵심 데이터로 사용됩니다.</small>
+                        </div>
+
+                        <div class="action-bar">
+                            <button type="submit" class="btn primary-btn">판결 제출 및 분석 시작</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Step 3: AI Analysis Loading/Viz -->
+            <section id="step-analysis" class="view-section">
+                <div class="analysis-loading-container">
+                    <h2 class="section-title">당신의 판결을 분석 중입니다...</h2>
+                    <div class="progress-container">
+                        <div id="analysis-progress-bar" class="progress-bar-fill"></div>
+                    </div>
+                    <p class="loading-text" id="loading-msg">법적 합치성을 검토 중입니다...</p>
+                </div>
+            </section>
+
+            <!-- Step 4: Analysis Results & Final Comparison -->
+            <section id="step-result" class="view-section">
+                <!-- Data Vis. for User's Bias & Emotion -->
+                <div class="result-card analysis-card">
+                    <h3>AI 분석 결과: 당신의 판단 방식</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <h4>감정 개입 비율 (자유서술 기반)</h4>
+                            <div class="progress-bar-container">
+                                <div id="emotion-bar" class="progress-bar emotion-bar"></div>
+                            </div>
+                            <p id="emotion-desc" class="stat-desc"></p>
+                            <p id="emotion-reason" class="stat-reason"></p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>법적 합치성</h4>
+                            <div class="progress-bar-container">
+                                <div id="legal-bar" class="progress-bar legal-bar"></div>
+                            </div>
+                            <p id="legal-desc" class="stat-desc"></p>
+                            <p id="legal-reason" class="stat-reason"></p>
+                        </div>
+                    </div>
+                    <div class="bias-tags" id="bias-tags-container">
+                        <!-- Bias tags injected here -->
+                    </div>
+                </div>
+
+                <!-- Final Comparison Table -->
+                <h2 class="section-title centered mt-4">판결 비교</h2>
+                <div class="table-container">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>구분</th>
+                                <th>판결 결과</th>
+                                <th>판단 근거 (요약)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight-row">
+                                <td>당신</td>
+                                <td id="tbl-user-verdict" class="bold"></td>
+                                <td id="tbl-user-reason"></td>
+                            </tr>
+                            <tr>
+                                <td>실제 판례</td>
+                                <td id="tbl-real-verdict"></td>
+                                <td id="tbl-real-reason" class="text-sm"></td>
+                            </tr>
+                            <tr>
+                                <td>AI 판결</td>
+                                <td id="tbl-ai-verdict"></td>
+                                <td id="tbl-ai-reason" class="text-sm"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- The 5 Core Questions (Interactive) -->
+                <!-- Unified Feedback & Lab Section -->
+                <div class="unified-feedback-lab mt-4">
+                    <!-- Top: AI Comparison Question -->
+                    <div class="reflection-item highlight-question-item text-center">
+                        <label class="highlight-label">당신의 판단은 AI의 판단과 합치합니까?</label>
+                        <div class="binary-choice-group">
+                            <button type="button" class="choice-btn negative">아니다</button>
+                            <button type="button" class="choice-btn positive">그렇다</button>
+                        </div>
+
+                        <!-- Register Button (Hidden by default, shown when choice is made) -->
+                        <div id="register-container" class="register-container mt-4 text-center"
+                            style="display:none; max-width: 400px; margin-left: auto; margin-right: auto;">
+                            <button id="btn-register-result" class="btn primary-btn w-full">판결 결과 등록 및 학습 기여</button>
+                            <div id="register-progress" class="register-progress-container mt-2" style="display:none;">
+                                <div id="register-progress-bar" class="register-progress-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom: Golden Tree & Lab Info (No separate box) -->
+                    <div class="lab-flex-container">
+                        <!-- Left: Visual Symbol -->
+                        <div class="lab-visual-left">
+                            <img src="golden_tree.png" alt="Golden Tree of Justice" class="golden-tree-img">
+                        </div>
+
+                        <!-- Right: Content -->
+                        <div class="lab-content-right">
+                            <div class="panel-header">
+                                <span class="badge">Future Justice Lab</span>
+                                <h3>당신과 모든 사용자의 정의를 학습합니다</h3>
+                            </div>
+                            <div class="panel-body">
+                                <p>본 시스템은 **Vertex AI 기반의 MLOps 파이프라인**을 통해 모든 사용자가 내린 판결의 이유와 양형 기준을 지속적으로 학습함으로써,
+                                    <br>
+                                    종국적으로 모든 사용자의 판단에 최대한 합치되는 법적 통찰력을 갖추게 될 것입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+    </div>
+
+    <div class="action-bar centered mt-4">
+        <button id="btn-restart" class="btn secondary-btn">다른 사건 판결하기</button>
+    </div>
+    </section>
+
+    </main>
+    </div>
+
+    <!-- Register Success Modal -->
+    <div id="register-modal" class="modal-overlay" style="display:none;">
+        <div class="modal-content card-glow">
+            <div class="modal-header text-center">
+                <div class="modal-checkmark">✅</div>
+                <h3>등록 완료</h3>
+            </div>
+            <div class="modal-body text-center mt-3">
+                <p>사용자의 판결 이유와 형량 기준이<br>향후 학습자료로 사용될 예정입니다.</p>
+            </div>
+            <div class="modal-footer text-center mt-4">
+                <button id="btn-close-modal" class="btn primary-btn">확인</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="cases.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
